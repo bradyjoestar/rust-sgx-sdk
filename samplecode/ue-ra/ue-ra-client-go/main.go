@@ -2,9 +2,7 @@ package main
 
 import (
 	"crypto/tls"
-	"io/ioutil"
 	"log"
-	"os"
 )
 
 const SERVERADDR = "localhost:3443"
@@ -40,31 +38,6 @@ func main() {
 	}
 
 	println("server replied: ", string(buf[:n]))
-}
-
-func loadCert() (string, string) {
-	certPem, err := readFile("./../../cert/client.crt")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	keyPEM, err := readFile("./../../cert/client.pkcs8")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return certPem, keyPEM
-}
-
-func readFile(filePth string) (string, error) {
-	f, err := os.Open(filePth)
-	if err != nil {
-		return "", err
-	}
-	content, err := ioutil.ReadAll(f)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
 }
 
 func make_config(cert tls.Certificate) *tls.Config {
