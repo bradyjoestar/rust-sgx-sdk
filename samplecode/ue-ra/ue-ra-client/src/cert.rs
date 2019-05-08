@@ -151,6 +151,7 @@ pub fn verify_mra_cert(cert_der: &[u8]) -> Result<(), sgx_status_t> {
             "GROUP_OUT_OF_DATE" | "GROUP_REVOKED" | "CONFIGURATION_NEEDED" => {
                 // Verify platformInfoBlob for further info if status not OK
                 if let Value::String(pib) = &attn_report["platformInfoBlob"] {
+                    println!("{}",pib);
                     let got_pib = platform_info::from_str(&pib);
                     println!("{:?}", got_pib);
                 } else {

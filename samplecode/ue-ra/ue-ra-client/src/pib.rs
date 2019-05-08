@@ -120,12 +120,29 @@ impl platform_info {
     pub fn from_str(pib_str : &str) -> platform_info_blob {
         let z = hex::decode(pib_str).unwrap();
         assert_eq!(z.len(), 105);
+        let mut index = -4;
+        let c = z.clone();
+        for i in c {
+            print!("{} {}, ",i,index);
+            index += 1;
+        }
+        println!(" ");
+
+        let d = z.clone();
+        for j in d{
+            print!("{} ",j)
+        }
 
         // Remove the TSV header (undocumented)
         let pib_vec = z[4..].to_vec();
         let mut pib_array : [u8;101] = [0;101];
         pib_array.clone_from_slice(&pib_vec[..]);
         let pib : platform_info_blob = unsafe { mem::transmute(pib_array)};
+
+        println!("{:02X}",pib.sgx_tcb_evaluation_flags);
+        println!("{:04X}",pib.sgx_tcb_evaluation_flags);
+        println!("{:08X}",pib.sgx_tcb_evaluation_flags);
+        println!("{}",pib.sgx_tcb_evaluation_flags);
 
         pib
     }

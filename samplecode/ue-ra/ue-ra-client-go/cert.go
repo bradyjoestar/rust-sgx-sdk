@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"log"
+	"time"
 )
 
 func verify_mra_cert(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
@@ -87,7 +90,7 @@ func verifyCert(payload []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	certnew, err := x509.ParseCertificate(sig_cert_dec)
+	certServer, err := x509.ParseCertificate(sig_cert_dec)
 	if err != nil {
 		log.Fatalln(err)
 		return nil, err
@@ -108,7 +111,7 @@ func verifyCert(payload []byte) ([]byte, error) {
 		Roots: roots,
 	}
 
-	if _, err := certnew.Verify(opts); err != nil {
+	if _, err := certServer.Verify(opts); err != nil {
 		log.Fatalln(err)
 		return nil, err
 	} else {
@@ -116,7 +119,7 @@ func verifyCert(payload []byte) ([]byte, error) {
 	}
 
 	// Verify the signature against the signing cert
-	err = certnew.CheckSignature(certnew.SignatureAlgorithm, attn_report_raw, sig)
+	err = certServer.CheckSignature(certServer.SignatureAlgorithm, attn_report_raw, sig)
 	if err != nil {
 		log.Fatalln(err)
 		return nil, err
@@ -128,24 +131,87 @@ func verifyCert(payload []byte) ([]byte, error) {
 
 func verifyAttReport(attn_report_raw []byte, pub_k []byte) error {
 	var qr QuoteReport
-	fmt.Println(string(attn_report_raw))
-	json.Unmarshal(attn_report_raw, &qr)
-
-	qb, err := base64.StdEncoding.DecodeString(qr.IsvEnclaveQuoteBody)
+	err := json.Unmarshal(attn_report_raw, &qr)
 	if err != nil {
 		return err
 	}
-	var quoteString, quoteStringTwo string
-	for _, b := range qb {
-		quoteString += fmt.Sprint(int(b),", ")
-		quoteStringTwo += fmt.Sprintf("%02x", int(b))
+
+	// 1. Check timestamp is within 24H
+	if qr.Timestamp != "" {
+		//timeFixed := qr.Timestamp + "+0000"
+		timeFixed := qr.Timestamp + "Z"
+		ts, _ := time.Parse(time.RFC3339, timeFixed)
+		now := time.Now().Unix()
+		fmt.Println("Time diff = ", now-ts.Unix())
+	} else {
+		return errors.New("Failed to fetch timestamp from attestation report")
 	}
 
-	fmt.Println("Quote = [" + quoteString[:len(quoteString)-2] + "]")
+	// 2. Verify quote status (mandatory field)
+	if qr.IsvEnclaveQuoteStatus != "" {
+		fmt.Println("isvEnclaveQuoteStatus = ", qr.IsvEnclaveQuoteStatus)
+		switch qr.IsvEnclaveQuoteStatus {
+		case "OK":
+			break
+		case "GROUP_OUT_OF_DATE", "GROUP_REVOKED", "CONFIGURATION_NEEDED":
+			// Verify platformInfoBlob for further info if status not OK
+			if qr.PlatformInfoBlob != "" {
+				platInfo, err := hex.DecodeString(qr.PlatformInfoBlob)
+				if err != nil && len(platInfo) != 105 {
+					return errors.New("illegal PlatformInfoBlob")
+				}
+				platInfo = platInfo[4:]
 
-	fmt.Println(quoteStringTwo[224:288])
-	fmt.Println(quoteStringTwo[352:416])
-	fmt.Println(quoteStringTwo[736:864])
+				piBlob := parsePlatform(platInfo)
+				piBlobJson ,err := json.Marshal(piBlob)
+				if err != nil{
+					return err
+				}
+				fmt.Println("Platform info is: "+string(piBlobJson))
+			} else {
+				return errors.New("Failed to fetch platformInfoBlob from attestation report")
+			}
+		default:
+			return errors.New("SGX_ERROR_UNEXPECTED")
+		}
+	} else {
+		err := errors.New("Failed to fetch isvEnclaveQuoteStatus from attestation report")
+		return err
+	}
 
+	// 3. Verify quote body
+	if qr.IsvEnclaveQuoteBody != "" {
+		qb, err := base64.StdEncoding.DecodeString(qr.IsvEnclaveQuoteBody)
+		if err != nil {
+			return err
+		}
+
+		var quoteBytes, quoteHex, pubHex string
+		for _, b := range qb {
+			quoteBytes += fmt.Sprint(int(b), ", ")
+			quoteHex += fmt.Sprintf("%02x", int(b))
+		}
+
+		for _, b := range pub_k {
+			pubHex += fmt.Sprintf("%02x", int(b))
+		}
+
+		qrData := parseReport(qb, quoteHex)
+
+		fmt.Println("Quote = [" + quoteBytes[:len(quoteBytes)-2] + "]")
+		fmt.Println("sgx quote version = ", qrData.version)
+		fmt.Println("sgx quote signature type = ", qrData.signType)
+		fmt.Println("sgx quote report_data = ", qrData.reportBody.reportData)
+		fmt.Println("sgx quote mr_enclave = ", qrData.reportBody.mrEnclave)
+		fmt.Println("sgx quote mr_signer = ", qrData.reportBody.mrSigner)
+		fmt.Println("Anticipated public key = ", pubHex)
+
+		if qrData.reportBody.reportData == pubHex {
+			fmt.Println("ue RA done!")
+		}
+	} else {
+		err := errors.New("Failed to fetch isvEnclaveQuoteBody from attestation report")
+		return err
+	}
 	return nil
 }

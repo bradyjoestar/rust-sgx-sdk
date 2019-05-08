@@ -27,6 +27,7 @@ func printCert(rawByte []byte) {
 	println("\")]")
 }
 
+
 func loadCert() (string, string) {
 	certPem, err := readFile("./../../cert/client.crt")
 	if err != nil {
