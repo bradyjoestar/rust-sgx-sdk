@@ -1,0 +1,22 @@
+[package]
+name = "ws-rs-lib"
+version = "0.1.0"
+authors = ["webb.shi <bradyjoestar@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[target.'cfg(not(target_env = "sgx"))'.dependencies]
+sgx_tstd = { path =  "../../sgx_tstd" }
+
+
+[dependencies]
+byteorder    = { path = "../byteorder" }
+bytes        = { path = "../bytes" }
+httparse     = { version = "1.3.2", default-features=false }
+slab         = { path = "../slab" }
+mio          = { path = "../mio" }
+log          = { git = "https://github.com/mesalock-linux/log-sgx" }
+rand         = { git = "https://github.com/mesalock-linux/rand-sgx" }
+sha-1        = { git = "https://github.com/gel-sgx/sha1" }
+libc         = { git = "https://github.com/mesalock-linux/libc-sgx" }

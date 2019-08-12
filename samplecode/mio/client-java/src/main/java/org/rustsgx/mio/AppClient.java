@@ -34,7 +34,6 @@ public class AppClient {
         HttpURLConnection conn = null;
 
         try {
-
             List<NameValuePair> nameValues = new ArrayList<NameValuePair>();
             for (String identifier : parameters.keySet()) {
                 NameValuePair pair = new BasicNameValuePair(identifier, parameters.get(identifier));
