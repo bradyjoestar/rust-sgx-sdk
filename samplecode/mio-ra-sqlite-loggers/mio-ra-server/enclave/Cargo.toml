@@ -1,10 +1,10 @@
 [package]
-name = "Loggerenclave"
+name = "MioRAServerEnclave"
 version = "1.0.0"
 authors = ["Baidu"]
 
 [lib]
-name = "loggerenclave"
+name = "mioraserverenclave"
 crate-type = ["staticlib"]
 
 [features]
