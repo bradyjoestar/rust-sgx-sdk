@@ -45,6 +45,12 @@ enclave {
     };
 
     untrusted {
+        sgx_status_t ocall_empty([in, size = inside_len] uint8_t * inside_str,
+                                  uint32_t inside_len,
+                                 [out, size = maxlen] uint8_t *p_result_str,
+                                  uint32_t maxlen,
+                                 [out] uint32_t * p_result_len);
+
         void ocall_println_string([in, string] const char *str);
         void ocall_print_string([in, string] const char *str);
         void ocall_print_error([in, string] const char *str);

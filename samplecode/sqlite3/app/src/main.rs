@@ -36,6 +36,20 @@ use std::env;
 use std::fs;
 use std::io::{Read, Write};
 use std::path;
+use std::slice;
+use std::str;
+use std::str::FromStr;
+
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
+extern crate sqlite3;
+
+mod buz;
+mod beans;
+mod sqlitedb;
+use buz::buzlogic::buzfn;
 
 static ENCLAVE_FILE: &'static str = "enclave.signed.so";
 static ENCLAVE_TOKEN: &'static str = "enclave.token";
@@ -47,6 +61,36 @@ extern "C" {
         existed: uint8_t,
         testtype: uint8_t,
     ) -> sgx_status_t;
+}
+
+#[no_mangle]
+pub extern "C" fn ocall_empty(
+    inside_str: *const u8,
+    inside_len: u32,
+    p_result_str: *mut u8,
+    maxlen: u32,
+    p_result_len: *mut u32,
+) -> sgx_status_t {
+    println!("ocall_empty");
+
+    let str_slice = unsafe { slice::from_raw_parts(inside_str, inside_len as usize) };
+    let jsonstr = str::from_utf8(str_slice).unwrap();
+
+    let resultstr = buzfn(jsonstr).as_bytes();
+
+    let result_slice = unsafe { slice::from_raw_parts_mut(p_result_str, maxlen as usize) };
+
+    let mut j = 0;
+    for x in resultstr {
+        result_slice[j] = *x;
+        j = j + 1;
+    }
+
+    unsafe {
+        *p_result_len = j as u32;
+    };
+    println!("inside_len is :{}", inside_len);
+    sgx_status_t::SGX_SUCCESS
 }
 
 fn init_enclave() -> SgxResult<SgxEnclave> {
