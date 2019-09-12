@@ -41,7 +41,7 @@ enclave {
     trusted {
         /* define ECALLs here. */
 
-        public sgx_status_t start_db(uint8_t existed);
+        public sgx_status_t start_db(uint8_t existed,uint8_t testtype);
     };
 
     untrusted {

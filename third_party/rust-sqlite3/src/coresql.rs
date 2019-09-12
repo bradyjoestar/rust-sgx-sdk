@@ -228,6 +228,11 @@ impl DatabaseConnection {
         }
     }
 
+
+    pub fn close(&mut self) -> (){
+        let ok = unsafe { ffi::sqlite3_close(self.db.handle) };
+    }
+
     /// Opt out of copies of error message details.
     pub fn ignore_detail(&mut self) {
         self.detailed = false;

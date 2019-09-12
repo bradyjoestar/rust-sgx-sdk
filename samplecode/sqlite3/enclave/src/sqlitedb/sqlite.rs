@@ -4,23 +4,23 @@ use std::prelude::v1::*;
 use std::slice;
 use std::vec::Vec;
 
-use crate::sqlitedb::opening;
 use sqlite3::{DatabaseConnection, SqliteResult};
+use sqlitedb::opening::base_test;
 use sqlitedb::sqlops;
 
-pub fn start_db(existed: uint8_t) -> SqliteResult<DatabaseConnection> {
+pub fn start_db(existed: uint8_t, num: i32) -> SqliteResult<DatabaseConnection> {
     // A sample &'static string
     let rust_raw_string = "This is a in-Enclave ";
     // An array
     println!("{}", &rust_raw_string);
 
-    let mut conn;
+    let mut conns;
     match sqlops::get_database_conn() {
         Ok(x) => {
-            conn = x;
+            conns = x;
             println!("sqlite opening test:");
-            opening::base_test(&mut conn, existed);
-            Ok(conn)
+            base_test(&mut conns, existed, num);
+            Ok(conns)
         }
         _ => {
             panic!("connect database failed");
