@@ -9,6 +9,8 @@ use sqlitedb::sqlops::lose;
 use sqlitedb::teacher_asset::TeacherAsset;
 use sqlitedb::teacherdao;
 
+pub mod ocalldemo;
+
 pub fn test_case_one() {
     let rc_context = Arc::new(DbContext::new("test.sqlite"));
 
@@ -180,7 +182,7 @@ pub fn test_case_nine() {
     }
 }
 
-pub fn test_case_ten(){
+pub fn test_case_ten() {
     let rc_context = Arc::new(DbContext::new("test.sqlite"));
 
     let teacher_asset = TeacherAsset::new(&rc_context, false);
@@ -201,8 +203,7 @@ pub fn test_case_ten(){
     }
 }
 
-
-pub fn test_case_eleven(){
+pub fn test_case_eleven() {
     let rc_context = Arc::new(DbContext::new("test.sqlite"));
 
     let teacher_asset = TeacherAsset::new(&rc_context, true);
@@ -210,12 +211,12 @@ pub fn test_case_eleven(){
     teacher_asset.select_teacher_sum();
 }
 
-pub fn test_case_twelve(){
+pub fn test_case_twelve() {
     let rc_context = Arc::new(DbContext::new("test.sqlite"));
 
     let teacher_asset = TeacherAsset::new(&rc_context, true);
 
-    for i in 0..1000{
+    for i in 0..1000 {
         match teacher_asset.select_teachers(i) {
             Ok(y) => {
                 println!("SELECT * FROM teacher");

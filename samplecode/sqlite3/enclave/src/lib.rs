@@ -98,12 +98,14 @@ pub extern "C" fn start_db(existed: uint8_t, testtype: uint8_t) -> sgx_status_t 
         testcase::test_case_eight();
     } else if testtype == 9 {
         testcase::test_case_nine();
-    } else if testtype == 10{
+    } else if testtype == 10 {
         testcase::test_case_ten();
-    } else if testtype == 11{
+    } else if testtype == 11 {
         testcase::test_case_eleven();
-    } else if  testtype == 12{
+    } else if testtype == 12 {
         testcase::test_case_twelve()
+    } else if testtype == 13 {
+        testcase::ocalldemo::test_case_thirteen();
     }
 
     sgx_status_t::SGX_SUCCESS

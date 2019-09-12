@@ -46,8 +46,8 @@ extern crate serde;
 extern crate serde_json;
 extern crate sqlite3;
 
-mod buz;
 mod beans;
+mod buz;
 mod sqlitedb;
 use buz::buzlogic::buzfn;
 
@@ -208,6 +208,9 @@ fn main() {
             }
             "--test12" => {
                 test_type = 12;
+            }
+            "--test13" => {
+                test_type = 13;
             }
             _ => {
                 panic!("Only --test* is accepted");

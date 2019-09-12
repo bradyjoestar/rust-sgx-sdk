@@ -45,13 +45,13 @@ pub fn buzfn(inputstr: &str) -> &str {
         if result.sendstatus == "end" {
             sqlitedb::teacherdao::insert_teacher(&mut conn, &mut teacher);
             let resultlist = sqlitedb::teacherdao::select_teacher_list(&mut conn).unwrap();
-            println!("{:?}",resultlist);
+            println!("{:?}", resultlist);
             println!("insert data success");
         } else {
             sqlitedb::teacherdao::insert_teacher(&mut conn, &mut teacher);
             println!("start to insert data");
             let resultlist = sqlitedb::teacherdao::select_teacher_list(&mut conn).unwrap();
-            println!("{:?}",resultlist);
+            println!("{:?}", resultlist);
             println!("insert data success");
         }
     } else {

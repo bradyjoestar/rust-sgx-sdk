@@ -124,13 +124,8 @@ impl TeacherAsset {
         }
     }
 
-
-    pub fn select_teachers(&self,num:i64) -> SqliteResult<Vec<Teacher>> {
-
-        let sql = format!(
-            "SELECT * FROM teacher where id = {}",
-            num
-        );
+    pub fn select_teachers(&self, num: i64) -> SqliteResult<Vec<Teacher>> {
+        let sql = format!("SELECT * FROM teacher where id = {}", num);
         //    select teacher
         let mut stmt: PreparedStatement = self.db_context.query(&sql)?;
 
@@ -160,5 +155,4 @@ impl TeacherAsset {
             .unwrap();
         Ok(ppl)
     }
-
 }
