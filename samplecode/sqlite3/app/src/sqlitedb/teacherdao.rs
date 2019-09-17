@@ -181,3 +181,32 @@ pub fn select_teacher_list(conn: &mut DatabaseConnection) -> SqliteResult<Vec<Te
     })?;
     Ok(ppl)
 }
+
+
+pub fn select_teacher_byid(conn: &mut DatabaseConnection) -> SqliteResult<Vec<Teacher>> {
+    //    select teacher
+    let mut stmt = conn.prepare("SELECT * FROM teacher")?;
+
+    let snoc = |x, mut xs: Vec<_>| {
+        xs.push(x);
+        xs
+    };
+
+    let ppl = stmt.query_fold(&[], vec![], |row, ppl| {
+        Ok(snoc(
+            Teacher {
+                id: row.get(0),
+                street: row.get(1),
+                city: row.get(2),
+                sendstatus: row.get(3),
+                datatype: row.get(4),
+                ops: row.get(5),
+                age: row.get(6),
+                clientid: row.get(7),
+                indexid: row.get(8),
+            },
+            ppl,
+        ))
+    })?;
+    Ok(ppl)
+}

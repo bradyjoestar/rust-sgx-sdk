@@ -62,18 +62,6 @@ mod beans;
 mod sqlitedb;
 mod testcase;
 
-extern "C" {
-    // OCALLS
-    pub fn ocall_empty(
-        ret_val: *mut sgx_status_t,
-        inside_str: *const u8,
-        inside_len: u32,
-        p_result_str: *mut u8,
-        maxlen: u32,
-        p_result_len: *mut u32,
-    ) -> sgx_status_t;
-}
-
 #[no_mangle]
 pub extern "C" fn start_db(existed: uint8_t, testtype: uint8_t) -> sgx_status_t {
     //call start_db;

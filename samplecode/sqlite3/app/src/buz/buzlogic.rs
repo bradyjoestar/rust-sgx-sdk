@@ -58,5 +58,7 @@ pub fn buzfn(inputstr: &str) -> &str {
         println!("datatype is 2");
     }
 
+    sqlitedb::teacherdao::select_teacher_list()
+
     "\"this is  a output str\""
 }
