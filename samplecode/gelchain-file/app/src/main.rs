@@ -36,6 +36,11 @@ use std::fs;
 use std::io::{Read, Write};
 use std::path;
 
+extern crate hex;
+extern crate openssl;
+mod pkcs12cert;
+mod shawithrsa;
+
 static ENCLAVE_FILE: &'static str = "enclave.signed.so";
 static ENCLAVE_TOKEN: &'static str = "enclave.token";
 
@@ -144,4 +149,16 @@ fn main() {
     println!("[+] unit_test ended!");
 
     enclave.destroy();
+
+    println!("Hello, world!");
+
+    shawithrsa::rsa_sign();
+    shawithrsa::rsa_verify_ok();
+    shawithrsa::rsa_sign_verify();
+
+    println!("------------pkcs12-------------");
+    pkcs12cert::create();
+    pkcs12cert::parse();
+    pkcs12cert::parse_empty_chain();
+    pkcs12cert::encrypt_data();
 }
