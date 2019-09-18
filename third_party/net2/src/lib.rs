@@ -107,7 +107,7 @@ fn cvt<T: One + PartialEq + Neg<Output=T>>(t: T) -> io::Result<T> {
 }
 
 //#[cfg(windows)]
-//fn cvt_win<T: PartialEq + utils::Zero>(t: T) -> io::Result<T> {
+//fn cvt_win<T: PartialEq + fileutils::Zero>(t: T) -> io::Result<T> {
 //    if t == T::zero() {
 //        Err(io::Error::last_os_error())
 //    } else {

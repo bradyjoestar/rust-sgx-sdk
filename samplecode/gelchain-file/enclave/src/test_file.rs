@@ -26,6 +26,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+use fileutils::cryptos;
 use sgx_rand::{Rng, StdRng};
 use sgx_types::SGX_FILE;
 use std::fs;
@@ -37,7 +38,6 @@ use std::untrusted::fs::remove_file;
 use std::untrusted::fs::File;
 use std::untrusted::fs::OpenOptions as ops;
 use std::vec::Vec;
-use utils::cryptos;
 
 pub fn test_sgxfs_write() {
     let mut write_data: [u8; 16] = [0; 16];

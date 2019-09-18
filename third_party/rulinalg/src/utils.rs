@@ -1,4 +1,4 @@
-//! Linear algebra utils module.
+//! Linear algebra fileutils module.
 //!
 //! Contains support methods for linear algebra structs.
 use std::vec::*;
@@ -11,11 +11,11 @@ use std::ops::{Add, Mul, Sub, Div};
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 /// let b = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::dot(&a,&b);
+/// let c = fileutils::dot(&a,&b);
 /// ```
 pub fn dot<T: Copy + Zero + Add<T, Output = T> + Mul<T, Output = T>>(u: &[T], v: &[T]) -> T {
     let len = cmp::min(u.len(), v.len());
@@ -92,12 +92,12 @@ pub fn unrolled_sum<T>(mut xs: &[T]) -> T
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 ///
 /// let mut a = vec![2.0; 10];
 /// let b = vec![3.0; 10];
 ///
-/// utils::in_place_vec_bin_op(&mut a, &b, |x, &y| { *x = 1f64 + *x * y });
+/// fileutils::in_place_vec_bin_op(&mut a, &b, |x, &y| { *x = 1f64 + *x * y });
 ///
 /// // Will print a vector of `7`s.
 /// println!("{:?}", a);
@@ -122,12 +122,12 @@ pub fn in_place_vec_bin_op<F, T>(u: &mut [T], v: &[T], mut f: F)
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 ///
 /// let mut a = vec![2.0; 10];
 /// let b = vec![3.0; 10];
 ///
-/// let c = utils::vec_bin_op(&a, &b, |x, y| { 1f64 + x * y });
+/// let c = fileutils::vec_bin_op(&a, &b, |x, y| { 1f64 + x * y });
 ///
 /// // Will print a vector of `7`s.
 /// println!("{:?}", a);
@@ -163,11 +163,11 @@ pub fn vec_bin_op<F, T>(u: &[T], v: &[T], f: F) -> Vec<T>
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 /// let b = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::vec_sum(&a,&b);
+/// let c = fileutils::vec_sum(&a,&b);
 ///
 /// assert_eq!(c, vec![2.0, 4.0, 6.0, 8.0]);
 /// ```
@@ -181,11 +181,11 @@ pub fn vec_sum<T: Copy + Add<T, Output = T>>(u: &[T], v: &[T]) -> Vec<T> {
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 /// let b = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::vec_sub(&a,&b);
+/// let c = fileutils::vec_sub(&a,&b);
 ///
 /// assert_eq!(c, vec![0.0; 4]);
 /// ```
@@ -198,11 +198,11 @@ pub fn vec_sub<T: Copy + Sub<T, Output = T>>(u: &[T], v: &[T]) -> Vec<T> {
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 /// let b = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::ele_mul(&a,&b);
+/// let c = fileutils::ele_mul(&a,&b);
 ///
 /// assert_eq!(c, vec![1.0, 4.0, 9.0, 16.0]);
 /// ```
@@ -215,11 +215,11 @@ pub fn ele_mul<T: Copy + Mul<T, Output = T>>(u: &[T], v: &[T]) -> Vec<T> {
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 /// let b = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::ele_div(&a,&b);
+/// let c = fileutils::ele_div(&a,&b);
 ///
 /// assert_eq!(c, vec![1.0; 4]);
 /// ```
@@ -235,10 +235,10 @@ pub fn ele_div<T: Copy + Div<T, Output = T>>(u: &[T], v: &[T]) -> Vec<T> {
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::argmax(&a);
+/// let c = fileutils::argmax(&a);
 /// assert_eq!(c.0, 3);
 /// assert_eq!(c.1, 4.0);
 /// ```
@@ -267,10 +267,10 @@ pub fn argmax<T>(u: &[T]) -> (usize, T)
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![5.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::argmin(&a);
+/// let c = fileutils::argmin(&a);
 /// assert_eq!(c.0, 1);
 /// assert_eq!(c.1, 2.0);
 /// ```
@@ -299,10 +299,10 @@ pub fn argmin<T>(u: &[T]) -> (usize, T)
 /// # Examples
 ///
 /// ```
-/// use rulinalg::utils;
+/// use rulinalg::fileutils;
 /// let a = vec![1.0, 2.0, 3.0, 4.0];
 ///
-/// let c = utils::find(&a, 3.0);
+/// let c = fileutils::find(&a, 3.0);
 /// assert_eq!(c, 2);
 /// ```
 pub fn find<T>(p: &[T], u: T) -> usize

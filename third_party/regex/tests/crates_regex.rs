@@ -892,13 +892,13 @@ consistent!(bbcode_24, r"(?s)\[youtube=(\d+)x(\d+)\](.*?)\[/youtube\]");
 // bbcode-1.0.2: r"(?s)\[li\](.*?)\[/li\]"
 consistent!(bbcode_25, r"(?s)\[li\](.*?)\[/li\]");
 
-// block-utils-0.5.0: r"loop\d+"
+// block-fileutils-0.5.0: r"loop\d+"
 consistent!(block_utils_0, r"loop\d+");
 
-// block-utils-0.5.0: r"ram\d+"
+// block-fileutils-0.5.0: r"ram\d+"
 consistent!(block_utils_1, r"ram\d+");
 
-// block-utils-0.5.0: r"md\d+"
+// block-fileutils-0.5.0: r"md\d+"
 consistent!(block_utils_2, r"md\d+");
 
 // kvvliveapi-0.1.0: r"^([1-9]) min$"

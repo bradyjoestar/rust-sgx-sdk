@@ -356,7 +356,7 @@
 //!
 //! ```
 //! # #[macro_use] extern crate error_chain;
-//! mod utils {
+//! mod fileutils {
 //!     error_chain! {
 //!         errors {
 //!             BadStuff {
@@ -369,7 +369,7 @@
 //! mod app {
 //!     error_chain! {
 //!         links {
-//!             Utils(::utils::Error, ::utils::ErrorKind);
+//!             Utils(::fileutils::Error, ::fileutils::ErrorKind);
 //!         }
 //!     }
 //! }
@@ -377,7 +377,7 @@
 //!
 //! # fn main() {
 //! match app::Error::from("error!") {
-//!     app::Error(app::ErrorKind::Utils(utils::ErrorKind::BadStuff), _) => { }
+//!     app::Error(app::ErrorKind::Utils(fileutils::ErrorKind::BadStuff), _) => { }
 //!     _ => { }
 //! }
 //! # }

@@ -42,6 +42,7 @@ extern crate rand;
 extern crate sgx_rand;
 
 extern crate crypto;
+extern crate ring;
 
 use sgx_types::*;
 
@@ -50,7 +51,8 @@ use std::vec::Vec;
 
 mod test_file;
 use test_file::*;
-mod utils;
+mod fileutils;
+mod ringutils;
 
 use sgx_rand::{Rng, StdRng};
 use std::io::{BufRead, BufReader, Read, Write};
@@ -77,12 +79,11 @@ pub extern "C" fn test_main_entrance() -> size_t {
     //    test_fs_untrusted_fs_feature_enabled_read_file();
     test_sgxfs_write();
 
-    let (key,iv) = test_sgxfs_read();
+    let (key, iv) = test_sgxfs_read();
     println!("The aes key is : {:?}", key);
     println!("The aes iv  is :  {:?}", iv);
 
-    gelchain_file(key.clone(),iv.clone());
-
+    gelchain_file(key.clone(), iv.clone());
 
     sgx_status_t::SGX_SUCCESS as usize
 }
@@ -127,7 +128,7 @@ pub fn test_sgxfs_write() {
     }
 }
 
-pub fn test_sgxfs_read() -> ([u8; 32],[u8; 16]) {
+pub fn test_sgxfs_read() -> ([u8; 32], [u8; 16]) {
     let mut key: [u8; 32] = [0; 32];
     let mut iv: [u8; 16] = [0; 16];
     let read_key_size;
@@ -154,11 +155,10 @@ pub fn test_sgxfs_read() -> ([u8; 32],[u8; 16]) {
         println!("{}", read_iv_size);
         println!("{:?}", iv);
     }
-    (key,iv)
+    (key, iv)
 }
 
-fn gelchain_file(key:[u8; 32],iv:[u8; 16]) {
-
+fn gelchain_file(key: [u8; 32], iv: [u8; 16]) {
     // In a real program, the key and iv may be determined
     // using some other mechanism. If a password is to be used
     // as a key, an algorithm like PBKDF2, Bcrypt, or Scrypt (all
@@ -179,4 +179,9 @@ fn gelchain_file(key:[u8; 32],iv:[u8; 16]) {
         let encrypted_message = line.unwrap();
         test_read_crypto_msg(encrypted_message, key.clone(), iv.clone());
     }
+
+
+    println!("-----------------sign_and_verify begin-------------------");
+    ringutils::cryptos::sign_and_verify();
+    println!("-----------------sign_and_verify success-------------------");
 }
