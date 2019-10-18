@@ -1,10 +1,10 @@
 [package]
-name = "Unittestsampleenclave"
+name = "Sealfileenclave"
 version = "1.0.0"
 authors = ["Baidu"]
 
 [lib]
-name = "unittestsampleenclave"
+name = "sealfileenclave"
 crate-type = ["staticlib"]
 
 [features]
